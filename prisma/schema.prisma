@@ -9,85 +9,92 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id            String      @id @default(cuid())
-  email         String      @unique
+model TradingUser {
+  id            String            @id @default(cuid())
+  email         String            @unique
   passwordHash  String
   name          String?
   phone         String?
   angelApiKey   String?
   angelClientId String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  watchlists    Watchlist[]
-  orders        Order[]
-  holdings      Holding[]
-  positions     Position[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  watchlists    TradingWatchlist[]
+  orders        TradingOrder[]
+  holdings      TradingHolding[]
+  positions     TradingPosition[]
+
+  @@map("trading_users")
 }
 
-model Watchlist {
-  id        String   @id @default(cuid())
+model TradingWatchlist {
+  id        String      @id @default(cuid())
   userId    String
   symbol    String
-  exchange  String   @default("NSE")
+  exchange  String      @default("NSE")
   name      String?
   token     String?
-  addedAt   DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addedAt   DateTime    @default(now())
+  user      TradingUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, symbol, exchange])
+  @@map("trading_watchlists")
 }
 
-model Order {
-  id            String   @id @default(cuid())
+model TradingOrder {
+  id            String      @id @default(cuid())
   userId        String
   symbol        String
-  exchange      String   @default("NSE")
-  side          String   // BUY | SELL
-  orderType     String   // MARKET | LIMIT | SL | SL_M
-  productType   String   @default("DELIVERY") // DELIVERY | INTRADAY
+  exchange      String      @default("NSE")
+  side          String
+  orderType     String
+  productType   String      @default("DELIVERY")
   quantity      Int
   price         Decimal?
   triggerPrice  Decimal?
-  status        String   @default("PENDING") // PENDING | OPEN | COMPLETE | CANCELLED | REJECTED
+  status        String      @default("PENDING")
   brokerOrderId String?
-  filledQty     Int      @default(0)
+  filledQty     Int         @default(0)
   avgFillPrice  Decimal?
-  placedAt      DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  placedAt      DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  user          TradingUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("trading_orders")
 }
 
-model Holding {
-  id          String   @id @default(cuid())
+model TradingHolding {
+  id          String      @id @default(cuid())
   userId      String
   symbol      String
-  exchange    String   @default("NSE")
+  exchange    String      @default("NSE")
   name        String?
   quantity    Int
   avgPrice    Decimal
   investedVal Decimal?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        TradingUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, symbol, exchange])
+  @@map("trading_holdings")
 }
 
-model Position {
-  id          String   @id @default(cuid())
+model TradingPosition {
+  id          String      @id @default(cuid())
   userId      String
   symbol      String
-  exchange    String   @default("NSE")
+  exchange    String      @default("NSE")
   name        String?
   quantity    Int
   avgPrice    Decimal
-  side        String   // BUY | SELL
-  dayPnl      Decimal  @default(0)
-  productType String   @default("INTRADAY")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  side        String
+  dayPnl      Decimal     @default(0)
+  productType String      @default("INTRADAY")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        TradingUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, symbol, exchange])
+  @@map("trading_positions")
 }

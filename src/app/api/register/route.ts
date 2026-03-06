@@ -9,13 +9,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Email and password required' }, { status: 400 })
     }
 
-    const existing = await prisma.user.findUnique({ where: { email } })
+    const existing = await prisma.tradingUser.findUnique({ where: { email } })
     if (existing) {
       return NextResponse.json({ error: 'Email already registered' }, { status: 409 })
     }
 
     const passwordHash = await bcrypt.hash(password, 12)
-    const user = await prisma.user.create({
+    const user = await prisma.tradingUser.create({
       data: { email, passwordHash, name: name || email.split('@')[0] },
     })
 
