@@ -7,7 +7,7 @@ interface QuoteData {
 }
 
 interface PortfolioSummary {
-  totalInvested: number; totalCurrent: number; totalPnl: number; totalPnlPercent: number; dayPnl: number
+  totalInvested: number; currentValue: number; totalPnl: number; totalPnlPercent: number; dayPnl: number; dayPnlPercent: number
 }
 
 export default function DashboardPage() {
@@ -56,7 +56,7 @@ export default function DashboardPage() {
         </div>
         <div className="bg-bg-card border border-border rounded-lg p-4">
           <div className="text-xxs text-txt-muted uppercase tracking-wider mb-2 font-medium">Current Value</div>
-          <div className="font-num text-lg font-semibold">{portfolio ? fmtLakh(portfolio.totalCurrent) : '--'}</div>
+          <div className="font-num text-lg font-semibold">{portfolio ? fmtLakh(portfolio.currentValue) : '--'}</div>
         </div>
         <div className="bg-bg-card border border-border rounded-lg p-4">
           <div className="text-xxs text-txt-muted uppercase tracking-wider mb-2 font-medium">Total P&L</div>
